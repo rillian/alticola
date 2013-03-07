@@ -4,6 +4,8 @@ var http = require('http');
 var WebSocketServer = require('websocket').server;
 var redis = require('redis').createClient();
 
+var redis_key = 'demo:20130308:lamp';
+
 redis.debug_mode = true;
 
 redis.on('error', function(err) {
@@ -47,7 +49,10 @@ ws.on('request', function(request) {
   console.log((new Date()) + ' connection ' + request.remoteAddress + ' accepted.');
   connection.on('message', function(message) {
     console.log((new Date()) + ' recving ' + message.utf8Data);
-    redis.publish('demo:20130308:lamp', message.utf8Data);
+    // Save the state for new connections.
+    redis.set(redis_key, message.utf8Data);
+    // Send the state to existing connections.
+    redis.publish(redis_key, message.utf8Data);
   });
   connection.on('close', function(reason, description) {
     console.log((new Date()) + ' connection ' + request.remoteAddress + ' closed.');
@@ -58,6 +63,11 @@ ws.on('request', function(request) {
     console.log((new Date()) + ' sending ' + message);
     connection.send(message);
   });
-  sub.subscribe('demo:20130308:lamp');
+  sub.subscribe(redis_key);
+
+  // We also have to send the current state.
+  redis.get(redis_key, function(err, reply) {
+    connection.send(reply);
+  });
 
 });

@@ -9,41 +9,40 @@
     }
   </style>
   <script>
+function log(message) {
+  console.log(message);
+  var p = document.createElement('p');
+  p.textContent = message;
+  document.getElementById('traffic').appendChild(p);
+}
+
 var conn = new WebSocket('ws://localhost:8888', 'lamp');
 conn.onopen = function() {
-  var traffic = document.getElementById('traffic');
-  traffic.innerHTML = '<p>websocket open.</p>';
+  log('websocket open.');
 };
 conn.onerror = function(error) {
-  var traffic = document.getElementById('traffic');
-  traffic.innerHTML = '<p>websocket error: ' + error + '.</p>';
+  log('websocket error: ' + error);
 };
 conn.onmessage = function(message) {
-  var traffic = document.getElementById('traffic');
-  traffic.innerHTML = '<p>' + message.data + '</p>';
+  log('received ' + message.data);
+  document.getElementById('switch').value = message.data;
 };
-var button = document.createElement('button');
-button.title = 'Click me';
-document.getElementById('traffic');
 
 function flip(event) {
   var button = event.target;
-  if (button.title == 'on') {
-    button.title = 'off';
+  if (button.value == 'on') {
+    button.value = 'off';
   } else {
-    button.title = 'on';
+    button.value = 'on';
   }
-  conn.send(button.title);
-}
-function send_off() {
-  conn.send('off');
+  conn.send(button.value);
 }
   </script>
 </head>
 <body>
   <div class=center>
     <h2>I am redis, hear me roar!</h2>
-    <button title='Click me' onclick='flip(event);'>
+    <input id=switch type=button value='Click me' onclick='flip(event);'>
     <div id=traffic>
     </div>
   </div>
