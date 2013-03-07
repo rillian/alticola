@@ -29,7 +29,7 @@ conn.onopen = function() {
   log('websocket open.');
 };
 conn.onerror = function(error) {
-  log('websocket error: ' + error);
+  log('websocket error!');
 };
 conn.onmessage = function(message) {
   log('received ' + message.data);
