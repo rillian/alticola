@@ -12,8 +12,6 @@ redis.on('error', function(err) {
   console.log((new Date()) + 'redis error: ' + err);
 });
 
-//sub.on('message', 
-
 var server = http.createServer(function(request, response) {
   response.writeHead(200, {'Content-Type': 'text/plain'});
 
