@@ -31,11 +31,28 @@ conn.onmessage = function(message) {
   var traffic = document.getElementById('traffic');
   traffic.innerHTML = '<p>' + message.data + '</p>';
 };
+var button = document.createElement('button');
+button.title = 'Click me';
+document.getElementById('traffic');
+
+function flip(event) {
+  var button = event.target;
+  if (button.title == 'on') {
+    button.title = 'off';
+  } else {
+    button.title = 'on';
+  }
+  conn.send(button.title);
+}
+function send_off() {
+  conn.send('off');
+}
   </script>
 </head>
 <body>
   <div class=center>
     <h2>I am redis, hear me roar!</h2>
+    <button title='Click me' onclick='flip(event);'>
     <div id=traffic>
     </div>
   </div>

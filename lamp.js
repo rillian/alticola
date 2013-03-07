@@ -46,7 +46,8 @@ ws.on('request', function(request) {
   var connection = request.accept('lamp', request.origin);
   console.log((new Date()) + ' connection ' + request.remoteAddress + ' accepted.');
   connection.on('message', function(message) {
-    console.log((new Date()) + ' <-- ' + message.utf8Data);
+    console.log((new Date()) + ' recving ' + message.utf8Data);
+    redis.publish('demo:20130308:lamp', message.utf8Data);
   });
   connection.on('close', function(reason, description) {
     console.log((new Date()) + ' connection ' + request.remoteAddress + ' closed.');
@@ -54,6 +55,7 @@ ws.on('request', function(request) {
 
   var sub = require('redis').createClient();
   sub.on('message', function (channel, message) {
+    console.log((new Date()) + ' sending ' + message);
     connection.send(message);
   });
   sub.subscribe('demo:20130308:lamp');
