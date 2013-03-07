@@ -42,9 +42,9 @@ ws.on('request', function(request) {
     return;
   }
 
-  
-  var connection = request.accept('lamp', request.origin);
-  console.log((new Date()) + ' connection ' + request.remoteAddress + ' accepted.');
+var connection = request.accept('lamp', request.origin);
+  console.log((new Date()) + ' connection ' + request.remoteAddress +
+                       ' ' + request.origin + ' accepted.');
   connection.on('message', function(message) {
     console.log((new Date()) + ' recving ' + message.utf8Data);
     // Save the state for new connections.
@@ -57,6 +57,7 @@ ws.on('request', function(request) {
   });
 
   var sub = require('redis').createClient();
+
   sub.on('message', function (channel, message) {
     console.log((new Date()) + ' sending ' + message);
     connection.send(message);
@@ -65,7 +66,12 @@ ws.on('request', function(request) {
 
   // We also have to send the current state.
   redis.get(redis_key, function(err, reply) {
-    connection.send(reply);
+    if (reply) {
+      connection.send(reply);
+    }
+  });
+  sub.on('error', function(err) {
+    console.log((new Date()) + 'redis error: ' + err);
   });
 
 });
