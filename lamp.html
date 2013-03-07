@@ -27,6 +27,11 @@ function log(message) {
 var conn = new WebSocket('ws://localhost:8888', 'lamp');
 conn.onopen = function() {
   log('websocket open.');
+  document.getElementById('switch').disabled = false;
+};
+conn.onclose = function() {
+  document.getElementById('switch').disabled = true;
+  log('websocket closed.');
 };
 conn.onerror = function(error) {
   log('websocket error!');
@@ -50,7 +55,7 @@ function flip(event) {
 <body>
   <div class=center>
     <h2>I am redis, hear me roar!</h2>
-    <input id=switch type=button value='Click me' onclick='flip(event);'>
+    <input id=switch type=button value='Click me' disabled onclick='flip(event);'>
     <div id=traffic>
     </div>
   </div>
