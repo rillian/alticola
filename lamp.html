@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>raspberry pi LED demo</title>
+  <style type=text/css>
+    body {
+      background-color: #101012;
+      color: #ccc;
+    }
+    #center {
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+  </style>
+  <script>
+var conn = new WebSocket('ws://localhost:8888', 'lamp');
+conn.onopen = function() {
+  var traffic = document.getElementById('traffic');
+  traffic.innerHTML = '<p>websocket open.</p>';
+};
+conn.onerror = function(error) {
+  var traffic = document.getElementById('traffic');
+  traffic.innerHTML = '<p>websocket error: ' + error + '.</p>';
+};
+conn.onmessage = function(message) {
+  var traffic = document.getElementById('traffic');
+  traffic.innerHTML = '<p>' + message.data + '</p>';
+};
+  </script>
+</head>
+<body>
+  <div class=center>
+    <h2>I am redis, hear me roar!</h2>
+    <div id=traffic>
+    </div>
+  </div>
+</body>
+</html>
