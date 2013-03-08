@@ -4,6 +4,8 @@ var http = require('http');
 var WebSocketServer = require('websocket').server;
 var redis = require('redis').createClient();
 
+var exec = require('child_process').exec;
+
 var redis_key = 'demo:20130308:lamp';
 
 redis.debug_mode = true;
@@ -47,6 +49,15 @@ var connection = request.accept('lamp', request.origin);
                        ' ' + request.origin + ' accepted.');
   connection.on('message', function(message) {
     console.log((new Date()) + ' recving ' + message.utf8Data);
+    exec('sudo /home/giles/alticola/gpio.sh ' + message.utf8Data, function(error, stdout, stderr) {
+      if (stdout)
+        console.log('exec: ' + stdout);
+      if (stderr)
+        console.log('exec: ' + stderr);
+      if (error) {
+        console.log('exec error: ' + error);
+      }
+    });
     // Save the state for new connections.
     redis.set(redis_key, message.utf8Data);
     // Send the state to existing connections.
