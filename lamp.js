@@ -49,7 +49,7 @@ var connection = request.accept('lamp', request.origin);
                        ' ' + request.origin + ' accepted.');
   connection.on('message', function(message) {
     console.log((new Date()) + ' recving ' + message.utf8Data);
-    exec('sudo /home/giles/alticola/gpio.sh ' + message.utf8Data, function(error, stdout, stderr) {
+    exec('sudo /home/pi/alticola/lamp.sh ' + message.utf8Data, function(error, stdout, stderr) {
       if (stdout)
         console.log('exec: ' + stdout);
       if (stderr)
